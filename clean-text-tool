@@ -1,0 +1,56 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cctype>
+
+using namespace std;
+
+// Function to remove punctuation from a word
+string removePunctuation(const string& word) {
+    string cleanedWord;
+    string punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+    for (char c : word) {
+        if (punctuation.find(c) == string::npos) {
+            cleanedWord += c;
+        }
+    }
+    return cleanedWord;
+}
+
+int main() {
+    ifstream inputFile("Words.txt");
+    ofstream outputFile("Words2.txt");
+
+    if (!inputFile.is_open() || !outputFile.is_open()) {
+        cerr << "Error: Unable to open file." << endl;
+        return 1;
+    }
+
+    string line;
+    int position = 0;
+    string longestWord;
+    int longestPosition = 0;
+
+    while (getline(inputFile, line)) {
+        position++;
+        string cleanedWord = removePunctuation(line);
+
+        // Write to the output file
+        outputFile << position << " " << cleanedWord << endl;
+
+        // Check for longest word (first occurrence priority)
+        if (cleanedWord.length() > longestWord.length()) {
+            longestWord = cleanedWord;
+            longestPosition = position;
+        }
+    }
+
+    cout << "The longest word in this text file is [" << longestPosition << "] "
+         << longestWord << " with " << longestWord.length() << " letters." << endl;
+
+    inputFile.close();
+    outputFile.close();
+
+    return 0;
+}
